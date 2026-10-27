@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}About ChatBond AI — Privacy, Tech & Documentation{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: 40px auto 60px;">
+
+  <div class="card">
+    <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--primary-color); margin-bottom: 12px;">
+      About ChatBond AI
+    </h1>
+    <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 24px;">
+      "Your chats, your memories, your insights."
+    </p>
+
+    <h3 style="font-size: 1.3rem; margin: 24px 0 12px; color: var(--text-dark);">🎯 Project Mission</h3>
+    <p style="margin-bottom: 16px;">
+      ChatBond AI is an intuitive, full-stack web application developed to help friends, couples, and groups uncover meaningful, fun patterns in their messaging habits. By analyzing standard exported WhatsApp conversation archives, users can appreciate active moments, shared laughs, and conversational balance.
+    </p>
+
+    <h3 style="font-size: 1.3rem; margin: 24px 0 12px; color: var(--text-dark);">🛡️ Privacy & Security First</h3>
+    <ul style="padding-left: 20px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px;">
+      <li><strong>Temporary Memory Processing:</strong> Uploaded chat files are processed strictly in-memory or in ephemeral temporary buffers during your session. They are never committed to permanent databases or persistent storage.</li>
+      <li><strong>Zero Account Linking:</strong> ChatBond AI works entirely with standard exported .txt files and requires no access to your WhatsApp account or QR codes.</li>
+      <li><strong>Google Gemini AI Handling:</strong> Full conversations are never transmitted to AI models. Only messages you deliberately type or paste into the AI Reply Generator are transmitted to Google Gemini to formulate suggestions.</li>
+      <li><strong>Clear On Demand:</strong> You can purge your session metrics at any time by clicking "Analyze Another Chat" or clearing your browser session.</li>
+    </ul>
+
+    <h3 style="font-size: 1.3rem; margin: 24px 0 12px; color: var(--text-dark);">⚙️ Technology Stack</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+      <div style="background: var(--bg-main); padding: 16px; border-radius: 8px;">
+        <strong>Backend:</strong> Python Flask 3.x
+      </div>
+      <div style="background: var(--bg-main); padding: 16px; border-radius: 8px;">
+        <strong>Frontend:</strong> Modern HTML5, Responsive CSS3, JavaScript ES6
+      </div>
+      <div style="background: var(--bg-main); padding: 16px; border-radius: 8px;">
+        <strong>Visualizations:</strong> Chart.js 4.x
+      </div>
+      <div style="background: var(--bg-main); padding: 16px; border-radius: 8px;">
+        <strong>AI Integration:</strong> Google GenAI SDK (Gemini)
+      </div>
+    </div>
+
+    <h3 style="font-size: 1.3rem; margin: 24px 0 12px; color: var(--text-dark);">⚠️ Entertainment & Ethics Disclaimer</h3>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">
+      The <strong>Friendship Score</strong> and trivia metrics are calculated from basic structural communication data (such as frequency, active days, and emoji density) solely for entertainment purposes. They do not constitute psychological assessments, loyalty indicators, or proof of emotional attachment.
+    </p>
+
+    <div style="margin-top: 30px; text-align: center;">
+      <a href="{{ url_for('index') }}" class="btn btn-primary">Back to Home</a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

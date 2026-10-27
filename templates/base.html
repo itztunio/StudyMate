@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ChatBond AI — WhatsApp Friendship Analyzer & AI Reply Generator{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💬</text></svg>">
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header">
+    <div class="container navbar">
+      <a href="{{ url_for('index') }}" class="brand-logo">
+        <span class="brand-icon">💬</span>
+        <span>ChatBond AI</span>
+      </a>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation">☰</button>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">Home</a></li>
+        <li><a href="{{ url_for('index') }}#upload" class="nav-link">Analyze Chat</a></li>
+        <li><a href="{{ url_for('insights') }}" class="nav-link">Friendship Insights</a></li>
+        <li><a href="{{ url_for('replies_page') }}" class="nav-link {% if request.endpoint == 'replies_page' %}active{% endif %}">AI Reply Generator</a></li>
+        <li><a href="{{ url_for('about') }}" class="nav-link {% if request.endpoint == 'about' %}active{% endif %}">About</a></li>
+        <li><a href="{{ url_for('demo') }}" class="nav-link nav-cta">Try Demo ⚡</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Flash Alerts for Feedback & Validation -->
+  <div class="container flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+            <span>{{ message }}</span>
+            <button class="alert-close" onclick="this.parentElement.style.display='none';">&times;</button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Page Content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-logo">ChatBond AI</div>
+          <p style="margin-top: 4px; font-size: 0.85rem;">"Your chats, your memories, your insights."</p>
+        </div>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="{{ url_for('replies_page') }}">AI Reply Generator</a></li>
+          <li><a href="{{ url_for('about') }}">Privacy & Security</a></li>
+          <li><a href="{{ url_for('demo') }}">Try Demo</a></li>
+        </ul>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 ChatBond AI. Created with Python Flask & Google Gemini. WhatsApp is a registered trademark of Meta Platforms, Inc. ChatBond AI is not affiliated with or endorsed by WhatsApp or Meta.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

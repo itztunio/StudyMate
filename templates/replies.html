@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}ChatBond AI — AI Reply Generator{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Header -->
+  <div style="text-align: center; margin: 40px 0 20px;">
+    <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-dark);">
+      🤖 AI Reply Studio
+    </h1>
+    <p style="color: var(--text-muted); max-width: 600px; margin: 8px auto 0;">
+      Never get stuck on what to say. Powered by Google Gemini, craft engaging WhatsApp reply suggestions customized to your preferred tone.
+    </p>
+  </div>
+
+  {% if not has_gemini %}
+  <!-- API Key Setup Alert -->
+  <div class="alert alert-warning" style="max-width: 800px; margin: 0 auto 30px;">
+    <div>
+      <strong>🔑 Google Gemini API Key Not Configured</strong>
+      <p style="margin-top: 4px; font-size: 0.9rem;">
+        To activate AI reply suggestions, create a <code>.env</code> file in the project folder with <code>GEMINI_API_KEY=your_key_here</code>. 
+        You can get a free key from <a href="https://aistudio.google.com/" target="_blank" style="color: inherit; text-decoration: underline; font-weight: 600;">Google AI Studio</a>.
+      </p>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Generator Layout -->
+  <div class="generator-layout">
+    
+    <!-- Input Form Card -->
+    <div class="card">
+      <h3 style="margin-bottom: 20px; font-size: 1.25rem;">📝 Message Inputs</h3>
+      
+      <form id="replyGeneratorForm">
+        <!-- Received Message Input -->
+        <div class="form-group">
+          <label class="form-label" for="receivedMessage">
+            Message You Received <span style="color: #dc2626;">*</span>
+          </label>
+          <textarea 
+            id="receivedMessage" 
+            class="form-control" 
+            placeholder="e.g. 'Are we still meeting up for dinner tonight, or should we reschedule?'" 
+            required></textarea>
+        </div>
+
+        <!-- Optional Context Input -->
+        <div class="form-group">
+          <label class="form-label" for="messageContext">
+            Context / What's on your mind? (Optional)
+          </label>
+          <input 
+            type="text" 
+            id="messageContext" 
+            class="form-control" 
+            placeholder="e.g. 'I'm running 20 minutes late from work, but still really want to go'">
+        </div>
+
+        <!-- Tone Selection -->
+        <div class="form-group">
+          <label class="form-label">Desired Tone</label>
+          <input type="hidden" id="selectedTone" value="friendly">
+          <div class="tone-selector">
+            <button type="button" class="tone-btn active" data-tone="friendly">😊 Friendly</button>
+            <button type="button" class="tone-btn" data-tone="funny">😂 Funny</button>
+            <button type="button" class="tone-btn" data-tone="cute">✨ Cute</button>
+            <button type="button" class="tone-btn" data-tone="polite">🤝 Polite</button>
+            <button type="button" class="tone-btn" data-tone="professional">💼 Professional</button>
+            <button type="button" class="tone-btn" data-tone="casual">😎 Casual</button>
+          </div>
+        </div>
+
+        <button type="submit" id="generateBtn" class="btn btn-primary" style="width: 100%;">
+          ✨ Generate 3 Reply Suggestions
+        </button>
+      </form>
+    </div>
+
+    <!-- Output Suggestions Card -->
+    <div class="card">
+      <h3 style="margin-bottom: 20px; font-size: 1.25rem;">💬 AI Suggestions</h3>
+      
+      <!-- Loading State -->
+      <div id="repliesLoading" class="spinner-container">
+        <div class="spinner"></div>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Gemini AI is crafting your replies...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="repliesError" class="alert alert-danger" style="display: none;"></div>
+
+      <!-- Suggestions Container -->
+      <div id="repliesContainer" class="replies-display-area">
+        <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+          <div style="font-size: 2.5rem; margin-bottom: 12px;">💡</div>
+          <p>Enter a message on the left and select your favorite tone to generate tailored replies!</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Privacy Disclosure regarding AI -->
+  <div class="privacy-banner" style="margin-bottom: 60px;">
+    <div class="icon">🔒</div>
+    <div>
+      <h4>AI Privacy & Data Handling</h4>
+      <p>
+        When you click "Generate Reply Suggestions", only the text you explicitly provide in the input fields above is sent to Google's Gemini API to produce reply options. No names, personal phone numbers, or unsubmitted chat histories are transmitted.
+      </p>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

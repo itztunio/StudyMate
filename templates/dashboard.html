@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}ChatBond AI — Chat Analysis Dashboard{% endblock %}
+
+{% block head_extra %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Dashboard Top Bar -->
+  <div class="dashboard-header">
+    <div class="dashboard-title-group">
+      <h1>Chat Analysis Dashboard</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Source: <strong>{{ filename }}</strong> &bull; Period: {{ summary.date_range }}
+      </p>
+    </div>
+
+    <div class="dashboard-actions">
+      <a href="{{ url_for('download_csv') }}" class="btn btn-sm btn-outline">📥 Export CSV</a>
+      <a href="{{ url_for('download_summary') }}" class="btn btn-sm btn-outline">📄 Text Summary</a>
+      <a href="{{ url_for('replies_page') }}" class="btn btn-sm btn-secondary">🤖 AI Reply Studio</a>
+      <a href="{{ url_for('clear_analysis') }}" class="btn btn-sm btn-primary">🔄 Analyze Another Chat</a>
+    </div>
+  </div>
+
+  <!-- Key Metrics 4-Box Grid -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon-box">💬</div>
+      <div>
+        <div class="metric-value">{{ "{:,}".format(summary.total_messages) }}</div>
+        <div class="metric-label">Total Messages</div>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-box">👥</div>
+      <div>
+        <div class="metric-value">{{ summary.participant_count }}</div>
+        <div class="metric-label">Participants</div>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-box">🏆</div>
+      <div>
+        <div class="metric-value" style="font-size: 1.25rem;">{{ summary.most_active_sender }}</div>
+        <div class="metric-label">Top Contributor</div>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-box">⏰</div>
+      <div>
+        <div class="metric-value">{{ summary.busiest_hour }}</div>
+        <div class="metric-label">Peak Chat Hour</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Friendship Insights & Score Section -->
+  <section id="friendship-insights" class="friendship-score-container">
+    <div class="score-header">
+      <span class="score-badge">✨ PLAYFUL CHAT BOND INSIGHTS</span>
+      <h2 style="font-size: 2rem; margin-bottom: 8px;">Friendship Activity Score</h2>
+      <p style="opacity: 0.85;">Based on communication rhythm, symmetry, continuity, and expressiveness</p>
+    </div>
+
+    <div class="score-main">
+      <div class="score-circle">
+        <span class="score-number">{{ friendship_score.total_score }}</span>
+        <span class="score-total">out of 100</span>
+      </div>
+
+      <div class="score-info">
+        <div class="score-tier">{{ friendship_score.tier }}</div>
+        <div class="score-tagline">{{ friendship_score.tagline }}</div>
+        <div class="score-disclaimer">
+          ⚠️ <strong>Note:</strong> This score is generated purely for fun and curiosity from measurable message counts and emoji patterns. It does not evaluate emotional depth, sincerity, or interpersonal worth.
+        </div>
+      </div>
+    </div>
+
+    <!-- Measurable Score Breakdown -->
+    <div class="score-breakdown-grid">
+      {% for key, item in friendship_score.breakdown.items() %}
+      <div class="breakdown-item">
+        <div class="breakdown-label">
+          <span>{{ item.label }}</span>
+          <span>{{ item.score }} / {{ item.max }}</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: {{ (item.score / item.max) * 100 }}%;"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Fun Facts & Conversational Highlights -->
+  <div class="fun-facts-card">
+    <h3 style="margin-bottom: 16px; font-size: 1.2rem; color: var(--primary-color);">💡 Chat Highlights & Observations</h3>
+    <ul class="fun-facts-list">
+      {% for fact in fun_facts %}
+      <li class="fun-fact-item">{{ fact }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Interactive Charts Grid (Chart.js) -->
+  <div class="charts-grid">
+    <!-- Messages by Participant (Bar) -->
+    <div class="chart-card">
+      <h3>📊 Messages per Participant</h3>
+      <div class="chart-canvas-container">
+        <canvas id="participantChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Message Distribution Share (Doughnut) -->
+    <div class="chart-card">
+      <h3>🍩 Conversation Share</h3>
+      <div class="chart-canvas-container">
+        <canvas id="shareChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Daily Timeline Activity (Line) -->
+    <div class="chart-card full-width">
+      <h3>📈 Daily Activity Over Time</h3>
+      <div class="chart-canvas-container">
+        <canvas id="dailyChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Top Emojis (Bar) -->
+    <div class="chart-card">
+      <h3>💖 Most-Used Emojis</h3>
+      <div class="chart-canvas-container">
+        <canvas id="emojiChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Busiest Hours Distribution (Bar) -->
+    <div class="chart-card">
+      <h3>🕒 Activity by Time of Day (24-Hour)</h3>
+      <div class="chart-canvas-container">
+        <canvas id="hourlyChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Participant Details Table -->
+  <div class="card" style="margin-bottom: 30px;">
+    <h3 style="margin-bottom: 16px; font-size: 1.2rem;">👥 Participant Activity Comparison</h3>
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Participant</th>
+            <th>Messages</th>
+            <th>Share (%)</th>
+            <th>Media Attachments</th>
+            <th>Avg Length (chars)</th>
+            <th>Top Emojis</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in participants %}
+          <tr>
+            <td><strong>{{ p.name }}</strong></td>
+            <td>{{ "{:,}".format(p.messages) }}</td>
+            <td>
+              <span style="display: inline-block; width: 45px;">{{ p.percentage }}%</span>
+              <div style="display: inline-block; width: 100px; height: 6px; background: #e2e8f0; border-radius: 3px; vertical-align: middle;">
+                <div style="height: 100%; width: {{ p.percentage }}%; background: var(--primary-accent); border-radius: 3px;"></div>
+              </div>
+            </td>
+            <td>{{ p.media }}</td>
+            <td>{{ p.avg_length }}</td>
+            <td style="font-size: 1.2rem;">{{ p.top_emojis }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Most Frequent Words Card -->
+  <div class="card" style="margin-bottom: 50px;">
+    <h3 style="margin-bottom: 16px; font-size: 1.2rem;">🔤 Most Frequent Words (Excluding Stop Words)</h3>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      {% for w in top_words %}
+      <div style="background: var(--bg-main); padding: 8px 16px; border-radius: 20px; font-size: 0.95rem; border: 1px solid var(--border-color);">
+        <strong style="color: var(--primary-color);">{{ w.word }}</strong>
+        <span style="color: var(--text-muted); font-size: 0.82rem; margin-left: 6px;">{{ w.count }}x</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const rawData = {{ charts_json | safe }};
+    initDashboardCharts(rawData);
+  });
+</script>
+{% endblock %}

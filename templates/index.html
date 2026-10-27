@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}ChatBond AI — WhatsApp Friendship Analyzer & AI Reply Generator{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-badge">🌿 100% Client-Safe & Privacy-First WhatsApp Analytics</div>
+    <h1 class="hero-title">Decode Your Chats with <span>ChatBond AI</span></h1>
+    <p class="hero-tagline">"Your chats, your memories, your insights." Discover deep friendship metrics, activity charts, fun trivia, and get smart AI replies.</p>
+    
+    <div class="hero-actions">
+      <a href="#upload" class="btn btn-primary">Analyze My Chat 🚀</a>
+      <a href="{{ url_for('demo') }}" class="btn btn-secondary">Try Demo ✨</a>
+    </div>
+  </section>
+
+  <!-- WhatsApp Upload Section -->
+  <section id="upload" class="upload-section">
+    <div class="card upload-card" id="dropZone">
+      <div class="upload-icon-circle">📂</div>
+      <h2 class="upload-title">Drop Your WhatsApp Chat Here</h2>
+      <p class="upload-subtitle">Upload your exported <strong>.txt</strong> chat file (Android or iPhone). No login or account connection needed.</p>
+
+      <form action="{{ url_for('analyze') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+        <input type="file" name="chat_file" id="chatFileInput" class="file-input" accept=".txt" required>
+        
+        <div id="fileNameBadge" class="file-info-badge">
+          <span>📄</span>
+          <span id="selectedFileName">No file selected</span>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('chatFileInput').click();">
+            Browse Files 📁
+          </button>
+          <button type="submit" id="analyzeBtn" class="btn btn-primary" disabled>
+            Analyze Chat ⚡
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Feature Highlights -->
+  <section class="features-section">
+    <h2 class="section-title">Key Capabilities</h2>
+    <p class="section-subtitle">Everything you need to explore and cherish your communication bond</p>
+
+    <div class="features-grid">
+      <div class="feature-box">
+        <span class="feature-icon">📊</span>
+        <h3 class="feature-heading">In-Depth Chat Analytics</h3>
+        <p class="feature-desc">Accurately computes total messages, word frequencies, busiest hours, most active days, and message distribution.</p>
+      </div>
+
+      <div class="feature-box">
+        <span class="feature-icon">🤝</span>
+        <h3 class="feature-heading">Playful Friendship Score</h3>
+        <p class="feature-desc">An entertaining 0–100 score calculating consistency, conversational balance, volume, and emoji expression.</p>
+      </div>
+
+      <div class="feature-box">
+        <span class="feature-icon">🤖</span>
+        <h3 class="feature-heading">AI Reply Assistant</h3>
+        <p class="feature-desc">Powered by Google Gemini. Instantly creates 3 tailored replies in funny, cute, friendly, or polite tones.</p>
+      </div>
+
+      <div class="feature-box">
+        <span class="feature-icon">📥</span>
+        <h3 class="feature-heading">Downloadable Reports</h3>
+        <p class="feature-desc">Export your analysis in structured CSV or download a plain-text keepsake summary of your conversation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step-by-Step Guide -->
+  <section class="guide-card">
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-subtitle">Exporting your chat is safe, fast, and takes under 30 seconds</p>
+
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num">Step 1</div>
+        <div class="step-title">Open WhatsApp Chat</div>
+        <p class="step-desc">Open the individual or group conversation you want to analyze on your phone.</p>
+      </div>
+      <div class="step-item">
+        <div class="step-num">Step 2</div>
+        <div class="step-title">Export Chat</div>
+        <p class="step-desc">Tap Menu (⋮) or Contact Name > More > Export Chat > Select <strong>Without Media</strong>.</p>
+      </div>
+      <div class="step-item">
+        <div class="step-num">Step 3</div>
+        <div class="step-title">Upload .txt File</div>
+        <p class="step-desc">Send the exported .txt file to your computer or upload it directly here.</p>
+      </div>
+      <div class="step-item">
+        <div class="step-num">Step 4</div>
+        <div class="step-title">Discover Insights</div>
+        <p class="step-desc">Explore rich visual charts, your Friendship Score, and generate AI replies!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy & Security Guarantee -->
+  <section class="privacy-banner">
+    <div class="icon">🛡️</div>
+    <div>
+      <h4>Your Privacy is Strictly Protected</h4>
+      <p>
+        ChatBond AI processes your chat file temporarily in memory to generate statistics and never stores your raw conversations on any database or permanent disk. Once your session ends or you click "Clear Analysis", the temporary data is removed. We never share your chat content with third parties.
+      </p>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
