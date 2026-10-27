@@ -240,8 +240,8 @@ elif app_mode == "🤖 AI Reply Studio":
     st.markdown('<div class="main-header">🤖 AI Reply Studio</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-header">Generate contextual WhatsApp replies powered by Google Gemini</div>', unsafe_allow_html=True)
 
-    current_key = get_gemini_key()
-    if not current_key:
+    key_present = bool(os.getenv('GEMINI_API_KEY')) or bool(get_gemini_key())
+    if not key_present:
         st.warning("⚠️ **Gemini API Key missing**: Set `GEMINI_API_KEY` in Streamlit Secrets to enable live AI replies.")
 
     with st.form("reply_form"):
