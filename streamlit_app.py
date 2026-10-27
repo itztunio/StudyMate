@@ -61,15 +61,22 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Helper to check or set Gemini API key from Streamlit secrets or env
-api_key = os.getenv('GEMINI_API_KEY')
-if not api_key:
+def get_gemini_key():
+    # 1. Check Streamlit Cloud secrets
     try:
-        api_key = st.secrets.get("GEMINI_API_KEY", "")
-        if api_key:
-            os.environ["GEMINI_API_KEY"] = api_key
+        if "GEMINI_API_KEY" in st.secrets and st.secrets["GEMINI_API_KEY"]:
+            return st.secrets["GEMINI_API_KEY"].strip()
     except Exception:
         pass
+    # 2. Check environment variable
+    env_key = os.getenv("GEMINI_API_KEY")
+    if env_key and env_key.strip():
+        return env_key.strip()
+    return None
+
+active_key = get_gemini_key()
+if active_key:
+    os.environ["GEMINI_API_KEY"] = active_key
 
 # Sidebar navigation
 with st.sidebar:
@@ -233,7 +240,8 @@ elif app_mode == "🤖 AI Reply Studio":
     st.markdown('<div class="main-header">🤖 AI Reply Studio</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-header">Generate contextual WhatsApp replies powered by Google Gemini</div>', unsafe_allow_html=True)
 
-    if not os.getenv('GEMINI_API_KEY'):
+    current_key = get_gemini_key()
+    if not current_key:
         st.warning("⚠️ **Gemini API Key missing**: Set `GEMINI_API_KEY` in Streamlit Secrets to enable live AI replies.")
 
     with st.form("reply_form"):
